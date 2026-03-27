@@ -6,13 +6,13 @@
 ![MCP Protocol](https://img.shields.io/badge/MCP-Protocol-purple?style=for-the-badge)
 
 
-Este repositório é um showcase de **Arquitetura de Software Moderna**, demonstrando a convergência entre **Specification-Driven Design (SDD)** e **Agentic Workflows**. Aqui, a IA não é apenas um "auto-complete", mas um agente de engenharia que opera sob regras rígidas de contrato e governança.
+Este repositório é um showcase de **Arquitetura de Software Moderna**, demonstrando a convergência entre **Specification-Driven Development (SDD)** e **Agentic Workflows**. Aqui, a IA não é apenas um "auto-complete", mas um agente de engenharia que opera sob regras rígidas de contrato e governança.
 
 ---
 
 ## 🌟 Por que "SDD-Agentic-Agnostic"?
 
-1.  **SDD (Specification-Driven Design):** A "Fonte da Verdade" é o contrato em **Smithy IDL**. O código é um derivado fiel da especificação, eliminando alucinações da IA e garantindo integridade sistêmica.
+1.  **SDD (Specification-Driven Development):** A "Fonte da Verdade" é o contrato em **Smithy IDL**. O código é um derivado fiel da especificação, eliminando alucinações da IA e garantindo integridade sistêmica.
 2.  **Agentic:** O projeto é desenhado para ser operado por Agentes (Gemini CLI, Qwen Code, Claude Code). O diretório `.ai/` contém o "cérebro" e as instruções para que a IA atue como um Engenheiro Sênior.
 3.  **Agnostic:** Total independência de ferramentas. Troque o LLM, a Linguagem de Programação ou o Banco de Dados sem perder a governança do projeto. O contrato (.smithy) e as instruções (.md) permanecem os mesmos.
 

@@ -109,7 +109,7 @@ cat <<EOF > $PROJECT_NAME/.ai/instructions.md
 # 🤖 Agentic Governance Instructions
 
 ## 🎯 Objetivo
-Este repositório utiliza **Specification-Driven Design (SDD)** para garantir que a IA atue como um Engenheiro de Software rigoroso, evitando alucinações.
+Este repositório utiliza **Specification-Driven Development (SDD)** para garantir que a IA atue como um Engenheiro de Software rigoroso, evitando alucinações.
 
 ## 🏗️ Protocolo de Design & Arquitetura
 - **Prioridade da Spec:** Nenhuma alteração de código deve ser feita sem validar o contrato em \`./specs/project.smithy\`.
@@ -163,7 +163,7 @@ cat <<EOF > $PROJECT_NAME/README.md
 Este repositório é um showcase de **Engenharia AI-Native**, demonstrando como orquestrar Agentes de IA (Gemini, Qwen, Claude) sob uma governança rígida de arquitetura.
 
 ### 🌟 Diferenciais Técnicos:
-- **Specification-Driven Design (SDD):** Contratos Smithy como única fonte da verdade.
+- **Specification-Driven Development (SDD):** Contratos Smithy como única fonte da verdade.
 - **Agentic Workflow:** Diretório \`.ai/\` com instruções semânticas para LLMs.
 - **Observabilidade por IA:** Pronto para integração com **MCP Servers** para debug autônomo.
 
