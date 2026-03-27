@@ -1,26 +1,25 @@
 #!/bin/bash
 
-# Nome do projeto (Agnóstico a domínio)
-PROJECT_NAME="sdd-agentic-project"
+# 0. Parametrização do Nome do Projeto
+PROJECT_NAME=${1:-"sdd-agentic-project"}
+
+echo "🚀 Iniciando bootstrap do projeto Agentic SDD: $PROJECT_NAME..."
 
 # 1. Criar estrutura de pastas profissional
 mkdir -p $PROJECT_NAME/{specs,.ai,docker,src/core,tests/contract}
 
 # 2. Criar o Contrato Universal (Smithy IDL)
-# Este arquivo é a "Fonte da Verdade" que a IA deve obedecer.
 cat <<EOF > $PROJECT_NAME/specs/project.smithy
 \$version: "2.0"
 
 namespace com.generic.api
 
 /// Core Service Definition - Template Universal 2026
-/// Este contrato define as interfaces fundamentais para o sistema via SDD.
 service CoreService {
     version: "2026-03-27",
     operations: [GetResource, CreateResource, ListResources]
 }
 
-/// Recupera um recurso específico por ID (Read-only)
 @readonly
 @http(method: "GET", uri: "/resource/{id}")
 operation GetResource {
@@ -43,7 +42,6 @@ structure ResourceOutput {
     createdAt: Timestamp
 }
 
-/// Criação de novos recursos com validação estrita e idempotência
 operation CreateResource {
     input: CreateResourceInput,
     output: ResourceOutput,
@@ -59,7 +57,6 @@ structure CreateResourceInput {
     tags: StringList
 }
 
-/// Listagem paginada de recursos
 @readonly
 @http(method: "GET", uri: "/resources")
 operation ListResources {
@@ -104,7 +101,6 @@ structure InternalError { message: String }
 EOF
 
 # 3. Criar as Instruções do Agente (Governança IA)
-# Este arquivo ensina o Gemini/Qwen como se comportar no projeto.
 cat <<EOF > $PROJECT_NAME/.ai/instructions.md
 # 🤖 Agentic Governance Instructions
 
@@ -119,25 +115,43 @@ Este repositório utiliza **Specification-Driven Development (SDD)** para garant
 ## 🛠️ Stack & Conectividade
 - **Modelagem:** Smithy IDL (Agnóstico a protocolo).
 - **Ambiente:** Docker para isolamento e reprodutibilidade.
-- **Ferramental:** Protocolo MCP (Model Context Protocol) para inspeção de Banco de Dados e Sistema de Arquivos em tempo real.
+- **Ferramental:** Protocolo MCP (Model Context Protocol) para inspeção de Banco de Dados e Sistema de Arquivos.
 EOF
 
 # 4. Criar o Diário de Decisões (Contexto Histórico)
 cat <<EOF > $PROJECT_NAME/.ai/journal.md
 # 📔 Decision Log & Architecture Journal
 
-## [2026-03-27] - Initial Project Setup
+## [$(date +%Y-%m-%d)] - Initial Project Setup
 - **Decisão:** Inicialização do projeto utilizando SDD e Agentic Workflow.
 - **Contexto:** Estrutura agnóstica preparada para escalabilidade.
-- **Arquitetura Base:** Modular Monolith (YAGNI - You Ain't Gonna Need It).
+- **Arquitetura Base:** Modular Monolith (YAGNI).
 EOF
 
-# 5. Criar o Docker Compose (Infraestrutura)
+# 5. Criar Dockerfile (O que faltava para o build funcionar)
+cat <<EOF > $PROJECT_NAME/Dockerfile
+FROM node:20-slim
+
+WORKDIR /app
+
+# Instalação mínima para desenvolvimento agêntico
+RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
+
+COPY package*.json ./
+# Ignora erro se não houver package.json ainda (o agente criará)
+RUN npm install || true
+
+COPY . .
+
+CMD [ "node", "src/core/index.js" ]
+EOF
+
+# 6. Criar o Docker Compose (Infraestrutura)
 cat <<EOF > $PROJECT_NAME/docker/docker-compose.yml
 services:
   db:
     image: postgres:16
-    container_name: core_db
+    container_name: ${PROJECT_NAME}_db
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
@@ -146,31 +160,16 @@ services:
       - "5432:5432"
 
   app:
-    build: ..
-    container_name: core_app
+    build: 
+      context: ..
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME}_app
     volumes:
       - ..:/app
     environment:
       DATABASE_URL: postgresql://admin:password@db:5432/app_db
     depends_on:
       - db
-EOF
-
-# 6. Criar o README de Portfólio (A Vitrine para Recrutadores)
-cat <<EOF > $PROJECT_NAME/README.md
-# Agentic SDD Project (2026)
-
-Este repositório é um showcase de **Engenharia AI-Native**, demonstrando como orquestrar Agentes de IA (Gemini, Qwen, Claude) sob uma governança rígida de arquitetura.
-
-### 🌟 Diferenciais Técnicos:
-- **Specification-Driven Development (SDD):** Contratos Smithy como única fonte da verdade.
-- **Agentic Workflow:** Diretório \`.ai/\` com instruções semânticas para LLMs.
-- **Observabilidade por IA:** Pronto para integração com **MCP Servers** para debug autônomo.
-
-### 🚀 Como Explorar:
-1. Analise o contrato inicial em \`specs/project.smithy\`.
-2. Veja como a IA é instruída em \`.ai/instructions.md\`.
-3. Suba a infraestrutura: \`docker-compose -f docker/docker-compose.yml up -d\`.
 EOF
 
 # 7. Criar o MCP Config (Model Context Protocol)
@@ -192,9 +191,38 @@ cat <<EOF > $PROJECT_NAME/mcp-config.json
 }
 EOF
 
+# 8. Criar o README de Portfólio
+cat <<EOF > $PROJECT_NAME/README.md
+# $PROJECT_NAME (2026)
+
+Este repositório é um showcase de **Engenharia AI-Native**, demonstrando como orquestrar Agentes de IA sob uma governança rígida de arquitetura (SDD).
+
+### 🌟 Diferenciais Técnicos:
+- **Specification-Driven Development (SDD):** Contratos Smithy como única fonte da verdade.
+- **Agentic Workflow:** Diretório \`.ai/\` com instruções semânticas para LLMs.
+- **Observabilidade por IA:** Configurado com **MCP Servers** (File/DB).
+
+### 🚀 Como Começar:
+1. **Ambiente:** \`docker-compose -f docker/docker-compose.yml up -d\`
+2. **IA:** Conecte seu Agente e peça para ele ler \`.ai/instructions.md\`.
+3. **Contrato:** Evolua o sistema a partir de \`specs/project.smithy\`.
+
+### 🛠️ Requisitos:
+- Docker & Docker Compose
+- Node.js (para rodar servidores MCP locais via npx)
+EOF
+
+# 9. Inicializar Git e criar Commit Inicial
+cd $PROJECT_NAME
+git init -q
+git add .
+git commit -m "feat: initial bootstrap via Agentic SDD generator" -q
+cd ..
+
 # Finalização
 chmod +x generate-agentic-sdd.sh
 echo "--------------------------------------------------------"
 echo "✅ Projeto '$PROJECT_NAME' gerado com sucesso!"
-echo "📂 Entre na pasta, inicie o Git e chame seu Agente."
+echo "📂 Pasta: ./$PROJECT_NAME"
+echo "🛠️ Git inicializado e commit de bootstrap realizado."
 echo "--------------------------------------------------------"
